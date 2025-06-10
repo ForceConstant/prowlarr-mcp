@@ -4,6 +4,8 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: prowlarr-mcp
+    labels:
+      - com.centurylinklabs.watchtower.enable=false
     ports:
       - "${PROWLARR_MCP_PORT:-9159}:${PROWLARR_MCP_PORT:-9159}"
     env_file:
