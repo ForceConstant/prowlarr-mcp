@@ -1,0 +1,28 @@
+services:
+  prowlarr-mcp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: prowlarr-mcp
+    ports:
+      - "${PROWLARR_MCP_PORT:-9159}:${PROWLARR_MCP_PORT:-9159}"
+    env_file:
+      - .env
+    volumes:
+      - prowlarr-logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6970/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    networks:
+      - prowlarr-mcp-network
+
+volumes:
+  prowlarr-logs:
+
+networks:
+  prowlarr-mcp-network:
+    driver: bridge 
