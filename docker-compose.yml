@@ -11,7 +11,7 @@ services:
     env_file:
       - .env
     volumes:
-      - prowlarr-logs:/app/logs
+      - /mnt/cache/appdata/prowlarr-mcp/logs:/app/logs
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9159/health"]
@@ -20,11 +20,8 @@ services:
       retries: 3
       start_period: 30s
     networks:
-      - prowlarr-mcp-network
-
-volumes:
-  prowlarr-logs:
+      - jakenet
 
 networks:
-  prowlarr-mcp-network:
-    driver: bridge 
+  jakenet:
+    external: true 
