@@ -10,6 +10,7 @@ import sys
 import httpx # For making API calls
 import logging
 import math # Moved math import to top level
+import copy
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 from typing import Optional, List, Dict, Any, Union
@@ -153,7 +154,14 @@ async def list_indexers() -> Dict[str, Any]:
         else:
             summary += "No indexers configured."
         
-        return {"summary": summary, "indexers": response}
+        # Remove 'capabilities' from each indexer to avoid returning large nested capability objects
+        sanitized_indexers = []
+        for idx in response:
+            idx_copy = copy.deepcopy(idx)
+            idx_copy.pop('capabilities', None)
+            sanitized_indexers.append(idx_copy)
+
+        return {"summary": summary, "indexers": sanitized_indexers}
     
     logger.error(f"Unexpected response type from Prowlarr API for list_indexers: {type(response)}")
     return {"error": "Failed to list indexers due to unexpected API response."}
